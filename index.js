@@ -50,7 +50,7 @@ class ImageScannerLtrV {
         this.x ++;
         if (this.x >= this.width) {
             this.x = 0;
-            this.y ++;
+            this.y += 8;
         }
 
         return byte
@@ -81,8 +81,12 @@ function convertImageToBytes(imageData) {
     let curr
     do {
         curr = scanner.nextByte()
-        arr.push(curr)
-    } while(curr != null)
+        if (curr != null) {
+            arr.push(curr)
+        } else {
+            break
+        }
+    } while(true)
     return arr
 }
 
@@ -128,7 +132,18 @@ function convertToArray() {
     setBnWImageData(bnwPixelData)
 
     const bytes = convertImageToBytes(bnwPixelData)
-    const str = bytes.join(", ")
+    const res = []
+    for (let i = 0; i < bytes.length; i++) {
+        if (i != 0) {
+            res.push(", ")
+        }
+        if (i % imageData.width == 0) {
+            res.push("\n")
+        }
+        const curr = "0x" + bytes[i].toString(16)
+        res.push(curr)
+    }
+    const str = res.join("")
     document.getElementById("textareaResult").textContent = str
 }
 
